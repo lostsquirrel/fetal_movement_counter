@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'info_view_model.dart';
 
 // set the expected date of childbirth as first
 class InitView extends StatelessWidget {
@@ -6,9 +9,7 @@ class InitView extends StatelessWidget {
   static const routeName = "/";
   @override
   Widget build(BuildContext context) {
-    if (_hasExpectedDate()) {
-      Navigator.pop(context);
-    }
+    
     return Scaffold(
       appBar: AppBar(title: const Text("预产期设置")),
       body: Center(
@@ -31,9 +32,9 @@ class InitView extends StatelessWidget {
     );
   }
 
-  bool _hasExpectedDate() {
-    return false;
-  }
+  // bool _hasExpectedDate() {
+  //   return SfDateRangePicker()
+  // }
 
   Future<void> _showDate(BuildContext context) async {
     var current = DateTime.now();

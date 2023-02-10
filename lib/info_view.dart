@@ -8,7 +8,7 @@ class InfoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    InfoViewModel infoVM = context.watch<InfoViewModel>();
+    InfoViewModel infoVM = context.read<InfoViewModel>().getInfo();
     return Scaffold(
       body: Column(
         children: _ui(infoVM),

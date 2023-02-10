@@ -22,9 +22,9 @@ class DatabaseHelper {
     return _instance;
   }
 
-  Future<Database> get db async {
+  Future<Database?> get db async {
     _db ??= await initDb();
-    return _db!;
+    return _db;
   }
 
   void _onCreate(Database db, int version) async {
@@ -39,12 +39,12 @@ class DatabaseHelper {
   initDb() async {
     io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, dbname);
-    InfoModel info = await InfoService.getInfo();
+    InfoModel info = await infoService.getInfo();
 
     if (info.buildNumber == firstBuildNumber) {
-      _db = await openDatabase(path, version: 1, onCreate: _onCreate);
+      return openDatabase(path, version: 1, onCreate: _onCreate);
     } else {
-      _db = await openDatabase(path,
+      return openDatabase(path,
           version: int.parse(info.buildNumber), onUpgrade: _onUpgrade);
     }
   }
