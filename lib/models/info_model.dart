@@ -13,7 +13,7 @@ class InfoModel {
     Map<String, dynamic> item =
         items.lastWhere((e) => e['key'] == expectedDateKey, orElse: () => {});
     if (item.isNotEmpty) {
-      expectedDate = DateTime(item['value']);
+      expectedDate = DateTime.parse(item['value']);
     }
   }
 }

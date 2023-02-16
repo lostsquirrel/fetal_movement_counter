@@ -3,21 +3,19 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'models/info_model.dart';
 
 class InfoHelper {
-  static final InfoHelper _instance = InfoHelper._();
-  static InfoModel? _info;
-  InfoHelper._();
-
+  static final InfoHelper _instance = InfoHelper._p();
+  InfoHelper._p();
   factory InfoHelper() {
     return _instance;
   }
-
-  Future<InfoModel> get info async {
-    _info ??= await getInfo();
-    return _info!;
+  late InfoModel _info;
+  Future<void> init() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    _info = InfoModel(
+        version: packageInfo.version, buildNumber: packageInfo.buildNumber);
   }
 
-  Future<InfoModel> getInfo() async {
-    final info = await PackageInfo.fromPlatform();
-    return InfoModel(version: info.version, buildNumber: info.buildNumber);
+  InfoModel get info {
+    return _info;
   }
 }
