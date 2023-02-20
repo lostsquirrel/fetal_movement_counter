@@ -49,7 +49,7 @@ class _InitViewState extends State<InitView> {
             // print(hasExpectedDate);
             if (hasExpectedDate != null && hasExpectedDate) {
               Future.delayed(Duration.zero, () {
-                Navigator.pushNamed(context, HomeView.routeName);
+                Navigator.pushReplacementNamed(context, HomeView.routeName);
               });
               children = [];
             } else {
@@ -58,7 +58,7 @@ class _InitViewState extends State<InitView> {
           } else if (snapshot.hasError) {
             children = showError(snapshot.error);
           } else {
-            children = loading;
+            children = shwoLoading;
           }
           return Center(
             child: Column(

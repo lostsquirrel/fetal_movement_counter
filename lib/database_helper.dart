@@ -14,6 +14,7 @@ const firstBuildNumber = "1";
 void _onCreate(Database db, int version) async {
   // create table statements here
   await db.execute(appInit);
+  await db.execute(counterTable);
 }
 
 // other database operations here

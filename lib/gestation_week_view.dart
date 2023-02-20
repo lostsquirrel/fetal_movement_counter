@@ -1,40 +1,34 @@
 import 'package:fetal_movement_counter/utils.dart';
 import 'package:flutter/material.dart';
 
-class GestationWeekView extends StatelessWidget {
-  const GestationWeekView({super.key, required this.expectedDate});
-
-  final DateTime expectedDate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text("孕$_gestationWeek周"),
-        if (_gestationWeekPlusDays > 0) Text("+$_gestationWeekPlusDays天"),
-        // const Spacer(),
-        Text(" 离预产期$_toExpectedDate天"),
-      ],
-    );
-  }
-
-  int get _toExpectedDate {
+Widget buildGestationWeek(DateTime? expectedDate) {
+  int toExpectedDate() {
+    if (expectedDate == null) return 0;
     return expectedDate.difference(DateTime.now()).inDays;
   }
 
-  int get _gestationDays {
+  int gestationDays() {
     int gestationTotal = daysInWeek * gestionWeeks;
 
-    int gestationDays = gestationTotal - _toExpectedDate;
+    int gestationDays = gestationTotal - toExpectedDate();
     return gestationDays;
   }
 
-  int get _gestationWeek {
-    return _gestationDays ~/ 7;
+  int gestationWeek() {
+    return gestationDays() ~/ 7;
   }
 
-  int get _gestationWeekPlusDays {
-    return _gestationDays % 7;
+  int gestationWeekPlusDays() {
+    return gestationDays() % 7;
   }
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Text("孕${gestationWeek()}周"),
+      if (gestationWeekPlusDays() > 0) Text("+${gestationWeekPlusDays()}天"),
+      // const Spacer(),
+      Text(" 离预产期${toExpectedDate()}天"),
+    ],
+  );
 }

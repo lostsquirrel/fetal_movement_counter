@@ -1,8 +1,9 @@
-import 'package:fetal_movement_counter/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'counter_view.dart';
 import 'database_helper.dart';
+import 'home_view.dart';
 import 'info_helper.dart';
 import 'init_view.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: '数胎动',
       initialRoute: "/init",
       routes: {
-        // "/": (context) => const MyHomePage(),
+        CounterView.routeName: (context) => const CounterView(),
         InitView.routeName: (context) => const InitView(),
         HomeView.routeName: (context) => const HomeView(),
       },

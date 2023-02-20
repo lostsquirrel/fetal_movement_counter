@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-const loading = <Widget>[
+const minuteOfMilliseconds = 60 * 1000;
+
+const shwoLoading = <Widget>[
   SizedBox(
     width: 60,
     height: 60,
