@@ -6,15 +6,15 @@ import 'common.dart';
 import 'utils.dart';
 
 // set the expected date of childbirth as first start
-class InitView extends StatefulWidget {
-  const InitView({super.key});
-  static const routeName = "/init";
+class ExpectedDate extends StatefulWidget {
+  const ExpectedDate({super.key});
+  static const routeName = "/expected_date";
 
   @override
-  State<InitView> createState() => _InitViewState();
+  State<ExpectedDate> createState() => _ExpectedDateState();
 }
 
-class _InitViewState extends State<InitView> {
+class _ExpectedDateState extends State<ExpectedDate> {
   final _formKey = GlobalKey<FormState>();
   final monthes = 12;
   late int year;

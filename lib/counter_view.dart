@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'counter_service.dart';
+import 'counter_service.dart' as counter_service;
 import 'models/counter_model.dart';
 
 class CounterView extends StatefulWidget {
@@ -13,9 +13,14 @@ class CounterView extends StatefulWidget {
 }
 
 class _CounterViewState extends State<CounterView> {
-  CounterModel counterModel = CounterModel([]);
+  // CounterModel counterModel = CounterModel([]);
 
   late int jobInSeconds = 0;
+
+  late int count = 0;
+  late int total = 0;
+  late bool hasJob = false;
+  late DateTime startTime = CounterModel.markerDate;
 
   int get jobShowMinute {
     return jobInSeconds ~/ 60;
@@ -25,6 +30,9 @@ class _CounterViewState extends State<CounterView> {
     return jobInSeconds % 60;
   }
 
+  bool get finishedJob =>
+      startTime != CounterModel.markerDate &&
+      DateTime.now().difference(startTime).inHours > 1;
   late Timer countDown;
 
   @override
@@ -35,17 +43,24 @@ class _CounterViewState extends State<CounterView> {
         if (jobInSeconds <= 0) {
           countDown.cancel();
         }
-        jobInSeconds -= 1;
+        jobInSeconds = jobInSeconds > 0 ? jobInSeconds - 1 : 0;
       });
     });
-    getCounter().then((value) {
+    counter_service.getCounter().then((CounterModel value) {
       setState(() {
-        counterModel = value;
-        jobInSeconds = value.startTime
-            .add(const Duration(hours: 1))
-            .difference(DateTime.now())
-            .inSeconds;
-        countDown;
+        // counterModel = value;
+        count = value.count;
+        total = value.total;
+        hasJob = value.hasJob;
+        startTime = value.startTime;
+        if (startTime == CounterModel.markerDate) {
+          jobInSeconds = 0;
+        } else {
+          jobInSeconds = value.startTime
+              .add(const Duration(hours: 1))
+              .difference(DateTime.now())
+              .inSeconds;
+        }
       });
     });
   }
@@ -64,50 +79,66 @@ class _CounterViewState extends State<CounterView> {
         children: [
           _buildHeadRow(),
           _buildCountdown(),
-          Text("点击次数: ${counterModel.total}"),
-          Expanded(
-            child: Container(
-              child: _buildButtons(),
-            ),
+          Text("点击次数: $total"),
+          const Spacer(
+            flex: 8,
           ),
+          _buildButtons(),
+          const Spacer(),
         ],
       ),
     );
   }
 
-  Row _buildButtons() {
-    var btStart = ElevatedButton(
-      child: const Text("开始数"),
-      onPressed: () {
-        start().then((_) {
-          getCounter().then((value) {
+  Widget _buildButtons() {
+    var messages = ["开始数", "动了", "完成"];
+    var handlers = [
+      () {
+        counter_service.start().then((_) {
+          counter_service.getCounter().then((value) {
             setState(() {
-              counterModel = value;
+              total = value.total;
+              hasJob = value.hasJob;
+              startTime = value.startTime;
             });
           });
         });
       },
-    );
-    var btCount = ElevatedButton(
-        onPressed: () {
-          count().then((_) {
-            getCounter().then((value) {
-              setState(() {
-                counterModel = value;
-              });
+      () {
+        counter_service.count().then((_) {
+          counter_service.getCounter().then((value) {
+            setState(() {
+              count = value.count;
+              total = value.total;
             });
           });
-        },
-        child: const Text("动了"));
-    return Row(
-      children: [
-        if (counterModel.hasJob) btCount else btStart,
-      ],
+        });
+      },
+      () {}
+    ];
+
+    var x = finishedJob
+        ? 2
+        : hasJob
+            ? 1
+            : 0;
+    return OutlinedButton(
+      onPressed: handlers[x],
+      style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.black12,
+          // maximumSize: Size.fromWidth(64),
+          // minimumSize: Size(64, 32),
+          textStyle: const TextStyle(fontSize: 32)),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(72, 48, 72, 48),
+        // margin: EdgeInsets.fromLTRB(32, 0, 32, 64),
+        child: Text(messages[x]),
+      ),
     );
   }
 
   Row _buildHeadRow() {
-    var start = counterModel.startTime;
+    var start = this.startTime;
     var styleKey = const TextStyle(fontSize: 22);
     var styleVal = const TextStyle(fontSize: 26);
     var startTime =
@@ -139,7 +170,7 @@ class _CounterViewState extends State<CounterView> {
               style: styleKey,
             ),
             Text(
-              "${counterModel.count}",
+              "$count",
               style: styleVal,
             ),
           ],

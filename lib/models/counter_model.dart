@@ -12,12 +12,12 @@ class CounterModel {
   late int count;
   late int total;
   var countPoint = 12;
-  final _markerDate = DateTime(1900, 1, 1);
+  static final markerDate = DateTime(1900, 1, 1);
   bool get hasJob => total > 0;
   Map<int, List<DateTime>> countDetail = {};
   CounterModel(List<Map<String, dynamic>> items) {
     if (items.isEmpty) {
-      startTime = _markerDate;
+      startTime = markerDate;
       count = 0;
       total = 0;
       return;
@@ -28,7 +28,7 @@ class CounterModel {
       orElse: () => {},
     );
     if (first.isEmpty) {
-      startTime = _markerDate;
+      startTime = markerDate;
       count = 0;
       total = 0;
       return;

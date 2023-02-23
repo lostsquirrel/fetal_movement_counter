@@ -24,18 +24,18 @@ class HomeView extends StatelessWidget {
               List<Widget> children;
               if (snapshot.hasData) {
                 InfoModel? data = snapshot.data;
-                Future.delayed(Duration.zero, () {
-                  if (data == null || data.expectedDate == null) {
-                    Navigator.pushNamed(context, InitView.routeName);
-                  } else {
-                    // start().then((_) {
-                    //   Navigator.pushNamed(context, CounterView.routeName);
-                    // });
-                  }
-                });
+                // Future.delayed(Duration.zero, () {
+                //   // if (data == null || data.expectedDate == null) {
+                //   //   Navigator.pushNamed(context, ExpectedDate.routeName);
+                //   // } else {
+                //     // start().then((_) {
+                //     //   Navigator.pushNamed(context, CounterView.routeName);
+                //     // });
+                //   }
+                // });
                 children = <Widget>[
                   buildGestationWeek(data!.expectedDate),
-                  _buildButtonOrCounter(context),
+                  // _buildButtonOrCounter(context),
                 ];
               } else if (snapshot.hasError) {
                 children = showError(snapshot.error);
@@ -73,7 +73,7 @@ class HomeView extends StatelessWidget {
             );
           } else {
             Future.delayed(Duration.zero, () {
-              print("push");
+              // print("push");
               Navigator.pushNamed(context, CounterView.routeName);
             });
           }

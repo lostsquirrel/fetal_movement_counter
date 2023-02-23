@@ -22,10 +22,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '数胎动',
-      initialRoute: "/init",
+      initialRoute: CounterView.routeName,
       routes: {
         CounterView.routeName: (context) => const CounterView(),
-        InitView.routeName: (context) => const InitView(),
+        ExpectedDate.routeName: (context) => const ExpectedDate(),
         HomeView.routeName: (context) => const HomeView(),
       },
       localizationsDelegates: const [
