@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'common.dart';
 import 'counter_service.dart' as counter_service;
 import 'models/counter_model.dart';
 
@@ -30,6 +31,8 @@ class _CounterViewState extends State<CounterView> {
     return jobInSeconds % 60;
   }
 
+  late int buttonIndex = 0;
+
   bool get finishedJob =>
       startTime != CounterModel.markerDate &&
       DateTime.now().difference(startTime).inHours > 1;
@@ -42,6 +45,7 @@ class _CounterViewState extends State<CounterView> {
       setState(() {
         if (jobInSeconds <= 0) {
           countDown.cancel();
+          // buttonIndex = 2;
         }
         jobInSeconds = jobInSeconds > 0 ? jobInSeconds - 1 : 0;
       });
@@ -55,11 +59,13 @@ class _CounterViewState extends State<CounterView> {
         startTime = value.startTime;
         if (startTime == CounterModel.markerDate) {
           jobInSeconds = 0;
+          buttonIndex = 0;
         } else {
           jobInSeconds = value.startTime
               .add(const Duration(hours: 1))
               .difference(DateTime.now())
               .inSeconds;
+          buttonIndex = 1;
         }
       });
     });
@@ -87,6 +93,7 @@ class _CounterViewState extends State<CounterView> {
           const Spacer(),
         ],
       ),
+      bottomNavigationBar: buildNavBar(1, context),
     );
   }
 
@@ -117,13 +124,8 @@ class _CounterViewState extends State<CounterView> {
       () {}
     ];
 
-    var x = finishedJob
-        ? 2
-        : hasJob
-            ? 1
-            : 0;
     return OutlinedButton(
-      onPressed: handlers[x],
+      onPressed: handlers[buttonIndex],
       style: OutlinedButton.styleFrom(
           backgroundColor: Colors.black12,
           // maximumSize: Size.fromWidth(64),
@@ -132,7 +134,7 @@ class _CounterViewState extends State<CounterView> {
       child: Container(
         padding: const EdgeInsets.fromLTRB(72, 48, 72, 48),
         // margin: EdgeInsets.fromLTRB(32, 0, 32, 64),
-        child: Text(messages[x]),
+        child: Text(messages[buttonIndex]),
       ),
     );
   }

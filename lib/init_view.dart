@@ -1,4 +1,3 @@
-import 'package:fetal_movement_counter/home_view.dart';
 import 'package:fetal_movement_counter/info_service.dart';
 import 'package:flutter/material.dart';
 
@@ -30,8 +29,19 @@ class _ExpectedDateState extends State<ExpectedDate> {
     var current = DateTime.now();
     year = current.year;
     month = current.month;
-    yearGap = month != 1;
     day = current.day;
+    getInfoModel().then((value) {
+      var expectedDate = value.expectedDate;
+      if (expectedDate != null) {
+        setState(() {
+          year = expectedDate.year;
+          month = expectedDate.month;
+          day = expectedDate.day;
+        });
+      }
+    });
+
+    yearGap = month != 1;
     start = DateTime(current.year, current.month, current.day);
     end = DateTime(current.year, current.month + monthes, current.day);
   }
@@ -40,34 +50,13 @@ class _ExpectedDateState extends State<ExpectedDate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("预产期设置")),
-      body: FutureBuilder(
-        future: hasExpectedDate(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          List<Widget> children;
-          if (snapshot.hasData) {
-            var hasExpectedDate = snapshot.data;
-            // print(hasExpectedDate);
-            if (hasExpectedDate != null && hasExpectedDate) {
-              Future.delayed(Duration.zero, () {
-                Navigator.pushReplacementNamed(context, HomeView.routeName);
-              });
-              children = [];
-            } else {
-              children = [_buildForm(context)];
-            }
-          } else if (snapshot.hasError) {
-            children = showError(snapshot.error);
-          } else {
-            children = shwoLoading;
-          }
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: children,
-            ),
-          );
-        },
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [_buildForm(context)],
+        ),
       ),
+      bottomNavigationBar: buildNavBar(2, context),
     );
   }
 
@@ -94,7 +83,11 @@ class _ExpectedDateState extends State<ExpectedDate> {
               child: const Text("确定"),
               onPressed: () {
                 addExpectedDate(DateTime(year, month, day)).then((value) {
-                  Navigator.pushNamed(context, HomeView.routeName);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("设置成功"),
+                    ),
+                  );
                 });
               },
             ))
