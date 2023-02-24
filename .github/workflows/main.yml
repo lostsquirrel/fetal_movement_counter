@@ -9,6 +9,8 @@ jobs:
   releases:
     name: release apk
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       JAVA_VERSION: "11"
       FLUTTER_VERSION: "3.7.3"
