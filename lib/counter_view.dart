@@ -13,6 +13,13 @@ class CounterView extends StatefulWidget {
   State<CounterView> createState() => _CounterViewState();
 }
 
+int calCountDownSeconds(DateTime start) {
+  return start
+      .add(const Duration(hours: 1))
+      .difference(DateTime.now())
+      .inSeconds;
+}
+
 class _CounterViewState extends State<CounterView> {
   // CounterModel counterModel = CounterModel([]);
 
@@ -21,7 +28,7 @@ class _CounterViewState extends State<CounterView> {
   late int count = 0;
   late int total = 0;
   late bool hasJob = false;
-  late DateTime startTime = CounterModel.markerDate;
+  late DateTime startTime = markerDate;
 
   int get jobShowMinute {
     return jobInSeconds ~/ 60;
@@ -34,7 +41,7 @@ class _CounterViewState extends State<CounterView> {
   late int buttonIndex = 0;
 
   bool get finishedJob =>
-      startTime != CounterModel.markerDate &&
+      startTime != markerDate &&
       DateTime.now().difference(startTime).inHours > 1;
   late Timer countDown;
 
@@ -57,14 +64,11 @@ class _CounterViewState extends State<CounterView> {
         total = value.total;
         hasJob = value.hasJob;
         startTime = value.startTime;
-        if (startTime == CounterModel.markerDate) {
+        if (startTime == markerDate) {
           jobInSeconds = 0;
           buttonIndex = 0;
         } else {
-          jobInSeconds = value.startTime
-              .add(const Duration(hours: 1))
-              .difference(DateTime.now())
-              .inSeconds;
+          jobInSeconds = calCountDownSeconds(value.startTime);
           buttonIndex = 1;
         }
       });
@@ -101,18 +105,20 @@ class _CounterViewState extends State<CounterView> {
     var messages = ["开始数", "动了", "完成"];
     var handlers = [
       () {
-        counter_service.start().then((_) {
+        counter_service.startJob().then((_) {
           counter_service.getCounter().then((value) {
             setState(() {
               total = value.total;
               hasJob = value.hasJob;
               startTime = value.startTime;
+              jobInSeconds = calCountDownSeconds(value.startTime);
+              buttonIndex = 1;
             });
           });
         });
       },
       () {
-        counter_service.count().then((_) {
+        counter_service.addCount().then((_) {
           counter_service.getCounter().then((value) {
             setState(() {
               count = value.count;

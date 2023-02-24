@@ -18,7 +18,13 @@ Future<CounterModel> getCounter() async {
   return CounterModel(items);
 }
 
-Future<void> start() async {
+Future<List<CounterDay>> getCounterResults() async {
+  final db = await DatabaseHelper().db;
+  var items = await db!.query(counterTable);
+  return groupByDay(groupByHour(items));
+}
+
+Future<void> startJob() async {
   final db = await DatabaseHelper().db;
   await db!.insert(counterTable, {
     columnType: countTypeSignal,
@@ -26,7 +32,7 @@ Future<void> start() async {
   });
 }
 
-Future<void> count() async {
+Future<void> addCount() async {
   final db = await DatabaseHelper().db;
   await db!.insert(counterTable, {
     columnType: countTypeCounter,

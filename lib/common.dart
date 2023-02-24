@@ -4,7 +4,7 @@ import 'package:fetal_movement_counter/init_view.dart';
 import 'package:flutter/material.dart';
 
 const minuteOfMilliseconds = 60 * 1000;
-
+const hourOfMilliseconds = minuteOfMilliseconds * 60;
 const shwoLoading = <Widget>[
   SizedBox(
     width: 60,
