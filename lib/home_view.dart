@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'common.dart';
 import 'counter_service.dart';
-import 'gestation_week_view.dart';
-import 'info_service.dart';
-import 'models/info_model.dart';
 
 // the main view
 class HomeView extends StatefulWidget {
